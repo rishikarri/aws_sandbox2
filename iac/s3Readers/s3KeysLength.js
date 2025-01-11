@@ -4,7 +4,7 @@ const JSZip = require('jszip');
 
 const lambdaClient = new LambdaClient({}); 
 
-const filePath = 'iac/index.js'; // Replace with the actual path to your file
+const filePath = 'iac/s3Readers/index.js'; // Replace with the actual path to your file
 
 async function createLambdaFunction() {
   try {
@@ -14,7 +14,7 @@ async function createLambdaFunction() {
     const zipBuffer = await zip.generateAsync({ type: 'nodebuffer' }); 
 
     const params = {
-      FunctionName: 's3-writer-lambda4', 
+      FunctionName: 's3-keys-length', 
       Runtime: 'nodejs18.x', 
       Handler: 'index.handler', 
       Role: 'arn:aws:iam::443370697679:role/LambdaS3WriteRole7', 

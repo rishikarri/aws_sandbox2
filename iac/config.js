@@ -1,7 +1,7 @@
 // running node config.js - gets connected to aws account
 // to change aws account - update aws config file 
-
 const AWS = require('aws-sdk');
+// console.log('hi')
 
 // Configure the SDK globally
 
