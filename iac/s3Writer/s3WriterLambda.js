@@ -17,7 +17,7 @@ async function createLambdaFunction() {
       FunctionName: 's3-writer-lambda4', 
       Runtime: 'nodejs18.x', 
       Handler: 'index.handler', 
-      Role: 'arn:aws:iam::443370697679:role/LambdaS3WriteRole7', 
+      Role: 'arn:aws:iam::443370697679:role/LambdaS3ReadWriteRole7', 
       Code: {
         ZipFile: zipBuffer 
       }
