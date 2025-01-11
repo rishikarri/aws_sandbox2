@@ -14,10 +14,10 @@ async function createLambdaFunction() {
     const zipBuffer = await zip.generateAsync({ type: 'nodebuffer' }); 
 
     const params = {
-      FunctionName: 's3-keys-length', 
+      FunctionName: 's3-keys-length2', 
       Runtime: 'nodejs18.x', 
       Handler: 'index.handler', 
-      Role: 'arn:aws:iam::443370697679:role/LambdaS3ReadWriteRole7', 
+      Role: 'arn:aws:iam::443370697679:role/LambdaS3ReadRole7', // s3 reader role
       Code: {
         ZipFile: zipBuffer 
       }

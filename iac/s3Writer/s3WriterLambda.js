@@ -1,36 +1,32 @@
-const { LambdaClient, CreateFunctionCommand } = require('@aws-sdk/client-lambda');
-const fs = require('fs').promises; 
-const JSZip = require('jszip'); 
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 
-const lambdaClient = new LambdaClient({}); 
+const s3Client = new S3Client({}); // Use default AWS credentials and region
 
-const filePath = 'iac/s3Writer/index.js'; // Replace with the actual path to your file
 
-async function createLambdaFunction() {
+exports.handler = async (event) => {
   try {
-    const data = await fs.readFile(filePath); 
-    const zip = new JSZip();
-    zip.file('index.js', data); 
-    const zipBuffer = await zip.generateAsync({ type: 'nodebuffer' }); 
+    console.log('event', event);
+
+    const reqBodyData = JSON.parse(event.body) // TODO: add validation to make sure incoming event is valid JSON
+    const data = reqBodyData.payload
 
     const params = {
-      FunctionName: 's3-writer-lambda4', 
-      Runtime: 'nodejs18.x', 
-      Handler: 'index.handler', 
-      Role: 'arn:aws:iam::443370697679:role/LambdaS3ReadWriteRole7', 
-      Code: {
-        ZipFile: zipBuffer 
-      }
+      Bucket: process.env.BUCKET_NAME, // Replace with your S3 bucket name
+      Key: 'data.json', // Replace with the desired file name in S3
+      Body: JSON.stringify(data) 
     };
 
-    const command = new CreateFunctionCommand(params);
+    const command = new PutObjectCommand(params);
+    const response = await s3Client.send(command);
 
-    const response = await lambdaClient.send(command); 
-    console.log('Lambda function created successfully:', response.FunctionName);
+    console.log('Successfully uploaded data to S3:', response); 
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: 'Data has been uploaded to S3 successfully', event })
+    };
 
   } catch (err) {
-    console.error('Error creating Lambda function:', err);
+    console.error('Error uploading to S3:', err);
+    throw err; 
   }
-}
-
-createLambdaFunction();
+};
